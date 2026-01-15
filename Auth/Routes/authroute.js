@@ -83,6 +83,7 @@ Router.post('/login', async (req, res) => {
         if (!matching) return res.status(401).json({ message: "the given password is not matching" })
 
         const token = JWT.sign({ userid: userdata._id,email:userdata.email,username:userdata.name,role:userdata.role },"secret", { expiresIn: "1d" })
+console.log(token);
 
         res.json({
             message: "login success full",

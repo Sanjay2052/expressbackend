@@ -10,7 +10,9 @@ mongoose.connect("mongodb://localhost:27017/stackquestion")
   .then(() => console.log('MongoDB connected👍'))
   .catch(err => console.error(err));
 
+
 app.use('/api/answer',answerrouter)
+
 
 app.listen(8004,()=>{
     console.log("the question server is running on PORT 8004");
