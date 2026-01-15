@@ -10,16 +10,25 @@ let Router = express.Router()
 
 Router.get('/profile', auth, async (req, res) => {
     try {
-        let userid=req.userId
-        let userdatas = await User.findOne({userid:userid})
-        console.log(userdatas);
+        // req.userid comes from your auth middleware (decoded.userid)
+        const userid = req.userid; 
+        console.log("userid:",userid);
         
-        if (!userdatas) res.status(400).json({ message: "the Useris not findable" })
-            res.json(userdatas)
+        // IMPORTANT: Search by your custom 'userId' field, not findById
+        const userdatas = await User.findOne({ userId: userid }).select("-password"); 
+        
+        console.log("Profile check for ID:", userid, "Found:", userdatas ? "Yes" : "No");
+        
+        if (!userdatas) {
+            return res.status(404).json({ message: "User not found in DB" });
+        }
+
+        res.json(userdatas); 
     } catch (error) {
         console.error("profile_error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
-})
+});
 Router.post('/create', async (req, res) => {
     let { name, email, role,userid } = req.body
     console.log("user id",userid);
@@ -41,11 +50,22 @@ Router.get('/users',async(req,res)=>{
     let data=await User.find()
     res.json(data)
 })
-Router.post('/findusers',async(req,res)=>{
-    let {email}=req.body
-    let data=await User.findOne(email)
-    if(!data)return res.status(300).json({message:"the email is not avilable"})
-    res.json(data)
-})
+// ✅ GET USER BY userId (USED BY POSTCARD)
+Router.get("/finduser/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("iddddd:",id);
+    
+    const user = await User.findOne({ userId: id });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = Router
