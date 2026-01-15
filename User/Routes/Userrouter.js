@@ -20,23 +20,37 @@ Router.get('/profile', auth, async (req, res) => {
         console.error("profile_error:", error);
     }
 })
-Router.post('/create', async (req, res) => {
-    let { name, email, role,userid } = req.body
-    console.log("user id",userid);
-    
-    try {
-        let profile = await User.create({
-            userId: userid,
-            name,
-            email,
-            role
-        })
-        res.json(profile)
-    } catch (error) {
-        console.error(error);
+Router.post("/create", async (req, res) => {
+  try {
+    const { name, domain, email, role, userid } = req.body;
 
+    if (!userid || !name || !domain || !email) {
+      return res.status(400).json({ message: "Missing required fields" });
     }
-})
+
+    const existingProfile = await User.findOne({ userId: userid });
+    if (existingProfile) {
+      return res.status(409).json({ message: "Profile already exists" });
+    }
+
+    const profile = await User.create({
+      userId: userid,
+      domain,
+      name,
+      email,
+      role: role === "ADMIN" ? "ADMIN" : "USER"
+    });
+
+    return res.status(201).json({
+      message: "User profile created successfully",
+      profile
+    });
+  } catch (error) {
+    console.error("Profile Create Error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
+
 Router.get('/users',async(req,res)=>{
     let data=await User.find()
     res.json(data)

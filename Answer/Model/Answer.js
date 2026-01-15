@@ -7,7 +7,7 @@ let AnswerSchema = new mongoose.Schema({
         index: true 
     },
     userId: {
-        type: String, 
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     content: {

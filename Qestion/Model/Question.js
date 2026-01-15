@@ -7,7 +7,6 @@ const QuestionSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    // Matches the 'description' field we mapped in the route
     description: { 
       type: String,
       required: true,
@@ -21,11 +20,8 @@ const QuestionSchema = new mongoose.Schema(
       default: "",
     },
     userId: {
-      // Changed to String for now so your "1" doesn't crash the app
-      // OR use mongoose.Schema.Types.ObjectId if you have real IDs
-      type: String, 
+      type: mongoose.Schema.Types.ObjectId, 
       required: true,
-      // ref: "User" // Uncomment this later when you have a User model
     },
     views: {
       type: Number,

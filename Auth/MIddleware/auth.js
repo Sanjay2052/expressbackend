@@ -18,7 +18,7 @@ function auth(req,res,next){
         let decode=JWT.verify(token,"secret")
         console.log("decoded:",decode);
 
-        req.user=decode
+        req.user=decode.userid
         console.log(" req.userid:", req.user.userid);
         next()
 

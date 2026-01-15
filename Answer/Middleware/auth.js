@@ -1,20 +1,40 @@
-let JWT=require('jsonwebtoken')
-require("dotenv").config()
+const jwt = require("jsonwebtoken");
 
-function auth(req,res,next){
-    try{
+function auth(req, res, next) {
+  try {
+    // 1️⃣ Read Authorization header
+    const authHeader = req.headers.authorization;
 
-        let token=req.headers.autherization?.split("")[1]
-        if(!token)return res.status(200).json({message:"token not findable"})
-            
-            let decoded=JWT.verify(token,process.env.JWT_SECRET) 
-            console.log("decoaded:",decoded);
-            req.user=decoded
-            next()
-            
-    }catch(error){
-        console.error(error);
-        return res.status(200).json({message:"there is a error on the auth"})
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        message: "Authorization token missing",
+      });
     }
+
+    // 2️⃣ Extract token
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(
+      token, "secret"
+    );
+
+    req.userId =decoded.userid
+
+    if (!req.userId) {
+      console.error("JWT payload missing userId:", decoded);
+      return res.status(401).json({
+        message: "UserId is missing from request",
+      });
+    }
+
+    // 5️⃣ Continue to next middleware / controller
+    next();
+
+  } catch (error) {
+    console.error("Auth Middleware Error:", error.message);
+    return res.status(401).json({
+      message: "Invalid or expired token",
+    });
+  }
 }
-module.exports=auth
+
+module.exports = auth;
