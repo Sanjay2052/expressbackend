@@ -30,6 +30,7 @@ Router.get('/profile', auth, async (req, res) => {
     }
 })
 Router.post("/create", async (req, res) => {
+  
   try {
     const { name, domain, email, role, userid } = req.body;
 

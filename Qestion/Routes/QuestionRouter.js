@@ -54,7 +54,7 @@ Router.get("/:id", async (req, res) => {
 Router.post("/", auth, async (req, res) => {
   try {
     const { title, description, tags, code } = req.body;
-
+console.log(title,tags)
     const newQuestion = new Question({
       title,
       description,

@@ -8,7 +8,7 @@ let commentschema = new mongoose.Schema({
     },
     userid: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "usercol", // Relation to the user
+        // ref: "usercol", // Relation to the user
         required: true
     },
     commentText: {

@@ -12,11 +12,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:3000", // frontend
-  credentials: true               // important if cookies/JWT
+  origin: "http://localhost:3000", 
+  credentials: true               
 }));
-
-
 
 
 mongoose.connect("mongodb://localhost:27017/stackuser")
